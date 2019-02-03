@@ -18,6 +18,13 @@ export class TransactionsComponent implements OnInit, AfterViewInit {
     { headerName: 'Amount', field: 'amount' }
   ];
 
+  defaultColDef = {
+    sortable: true,
+    editable: true,
+    filter: true,
+    resizable: true
+  };
+
   constructor(private appService: AppService) { }
 
   ngOnInit() { }
@@ -33,7 +40,7 @@ export class TransactionsComponent implements OnInit, AfterViewInit {
     });
   }
 
-  addTransaction() {
+  onBtnAddTransaction() {
     const newTrans = new Transaction();
     newTrans.title = 'new transaction';
     newTrans.category = 'b';
