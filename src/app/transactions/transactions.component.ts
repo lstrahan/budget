@@ -1,4 +1,11 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
+
+import { AgGridMaterialTextEditorComponent } from '../ag-grid-editors/ag-grid-material-text-editor/ag-grid-material-text-editor.component';
+import { AgGridMaterialSelectEditorComponent } from '../ag-grid-editors/ag-grid-material-select-editor/ag-grid-material-select-editor.component';
+import { AgGridMaterialCheckboxCellComponent } from '../ag-grid-editors/ag-grid-material-checkbox-cell/ag-grid-material-checkbox-cell.component';
+import { AgGridMaterialDatepickerEditorComponent } from '../ag-grid-editors/ag-grid-material-datepicker-editor/ag-grid-material-datepicker-editor.component';
+import * as moment from 'moment';
+
 import { AppService } from '../app.service';
 import { Transaction } from '../models/transaction';
 import { RowEvent, AgGridEvent, ColDef, GridApi, ColumnApi } from 'ag-grid-community';
@@ -17,8 +24,13 @@ export class TransactionsComponent implements OnInit, AfterViewInit {
   private categories: Category[];
 
   columnDefs: ColDef[] = [
-    { headerName: 'Title', field: 'title' },
-    { headerName: 'Date', field: 'date' },
+    { headerName: 'Name', field: 'name' },
+    {
+      headerName: 'Date',
+      field: 'date',
+      cellEditorFramework: AgGridMaterialDatepickerEditorComponent,
+      valueFormatter: (data) => data.value ? (data.value as moment.Moment).format('L') : null
+    },
     { headerName: 'Category', field: 'category' },
     { headerName: 'Amount', field: 'amount' }
   ];
@@ -45,7 +57,7 @@ export class TransactionsComponent implements OnInit, AfterViewInit {
     this.gridApi.setColumnDefs(this.columnDefs);
     this.gridApi.setSortModel([{ colId: 'date', sort: 'desc' }]);
     this.gridApi.sizeColumnsToFit();
-    this.gridApi.setPinnedTopRowData([ this.blankTransaction ]);
+    this.gridApi.setPinnedTopRowData([this.blankTransaction]);
 
     this.appService.getTransactions().subscribe(res => {
       this.gridApi.setRowData(res);
@@ -69,7 +81,7 @@ export class TransactionsComponent implements OnInit, AfterViewInit {
       this.appService.createTransaction(trans).subscribe(res => {
         this.gridApi.updateRowData({ add: [res] });
         this.blankTransaction.deserialize({ id: '', title: '', category: '', amount: 0.00 });
-        this.gridApi.setPinnedTopRowData([ this.blankTransaction ]);
+        this.gridApi.setPinnedTopRowData([this.blankTransaction]);
       });
     } else {
       this.appService.updateTransaction(trans).subscribe();
@@ -77,3 +89,4 @@ export class TransactionsComponent implements OnInit, AfterViewInit {
   }
 
 }
+

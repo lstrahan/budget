@@ -1,0 +1,5 @@
+<mat-select #select (change)="onSelectChange($event)" [(ngModel)]="value" [style.width]="columnWidth">
+  <mat-option *ngFor="let item of values" [value]="item">
+    {{ item }}
+  </mat-option>
+</mat-select>

@@ -1,6 +1,11 @@
+import * as moment from 'moment';
+import * as _ from 'lodash';
+import { Expose, Exclude, Transform, classToPlain, Type } from 'class-transformer';
+
 export class Category {
     id: string;
-    title: string;
+    name: string;
+    type: string;
 
     constructor(json?: any) {
         if (json) {
@@ -21,8 +26,9 @@ export class Category {
      * deserialize
      ****************************************************************************/
     deserialize(json: any) {
-        this.id = _.defaultTo(json.id, 'n/a');
-        this.title = _.defaultTo(json.title, 'n/a');
+        this.id = _.defaultTo(json.id, '');
+        this.name = _.defaultTo(json.title, 'n/a');
+        this.type = _.defaultTo(json.title, 'n/a');
     }
 
     /****************************************************************************
