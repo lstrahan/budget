@@ -27,8 +27,8 @@ export class Category {
      ****************************************************************************/
     deserialize(json: any) {
         this.id = _.defaultTo(json.id, '');
-        this.name = _.defaultTo(json.title, 'n/a');
-        this.type = _.defaultTo(json.title, 'n/a');
+        this.name = _.defaultTo(json.name, 'n/a');
+        this.type = _.defaultTo(json.type, 'n/a');
     }
 
     /****************************************************************************

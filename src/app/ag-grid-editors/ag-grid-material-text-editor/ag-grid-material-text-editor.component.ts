@@ -1,6 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ICellEditorParams} from 'ag-grid-community';
-import {AgEditorComponent,} from 'ag-grid-angular';
+import {AgEditorComponent} from 'ag-grid-angular';
 import {MatInput} from '@angular/material';
 
 @Component({
@@ -20,7 +20,7 @@ export class AgGridMaterialTextEditorComponent implements OnInit, AgEditorCompon
     }
 
     ngAfterViewInit() {
-        this.input.focus();
+        // this.input.focus();
     }
 
     isPopup(): boolean {

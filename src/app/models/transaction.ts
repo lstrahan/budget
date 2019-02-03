@@ -4,9 +4,9 @@ import { Expose, Exclude, Transform, classToPlain, Type } from 'class-transforme
 
 export class Transaction {
     id: string;
-    name: string;
+    description: string;
     categoryId: string;
-    category: string;
+    // category: string;
     @Transform((value) => moment(value).toISOString(), { toPlainOnly: true })
     date: moment.Moment;
     amount: number;
@@ -31,9 +31,9 @@ export class Transaction {
      ****************************************************************************/
     deserialize(json: any) {
         this.id = _.defaultTo(json.id, '');
-        this.name = _.defaultTo(json.name, 'n/a');
-        this.categoryId = _.defaultTo(json.categoryId, 'n/a');
-        this.category = _.defaultTo(json.category, 'n/a');
+        this.description = _.defaultTo(json.description, 'n/a');
+        this.categoryId = _.defaultTo(json.categoryId, '');
+        // this.category = _.defaultTo(json.category, 'n/a');
         this.date = _.defaultTo(moment(json.date), moment());
         this.amount = _.defaultTo(json.amount, 0);
     }

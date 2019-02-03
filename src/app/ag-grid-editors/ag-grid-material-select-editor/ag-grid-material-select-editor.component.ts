@@ -1,14 +1,14 @@
-import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { IAfterGuiAttachedParams, ICellEditorParams } from "ag-grid-community";
-import { AgEditorComponent, } from "ag-grid-angular";
-import { MatSelect } from "@angular/material";
+import { Component, OnInit, ViewChild, ViewContainerRef, AfterViewInit } from '@angular/core';
+import { IAfterGuiAttachedParams, ICellEditorParams } from 'ag-grid-community';
+import { AgEditorComponent, } from 'ag-grid-angular';
+import { MatSelect } from '@angular/material';
 
 @Component({
   selector: 'app-ag-grid-material-select-editor',
   templateUrl: './ag-grid-material-select-editor.component.html',
   styleUrls: ['./ag-grid-material-select-editor.component.scss']
 })
-export class AgGridMaterialSelectEditorComponent implements OnInit, AgEditorComponent {
+export class AgGridMaterialSelectEditorComponent implements OnInit, AfterViewInit, AgEditorComponent {
     columnWidth: string;
     values: [ string ];
     params: ICellEditorParams;
@@ -37,7 +37,7 @@ export class AgGridMaterialSelectEditorComponent implements OnInit, AgEditorComp
 
     agInit(params: any): void {
         this.params = params;
-        this.columnWidth = params.column.actualWidth + "px";
+        this.columnWidth = params.column.actualWidth + 'px';
         this.values = params.values;
         this.value = params.value;
     }
