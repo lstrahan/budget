@@ -93,7 +93,22 @@ export class MockServiceInterceptor implements HttpInterceptor {
                 }
             }
 
-            // GET Transactions
+            // PUT Transaction
+            if (request.url.endsWith('/transaction') && request.method === 'PUT') {
+                const reqBody = request.body;
+                console.log(`>>>>>> MOCK <<<<<< ${request.url}`, reqBody);
+                this.sleep(500);
+                if (reqBody) {
+                    const trans = new Transaction(reqBody);
+                    const ndx = this.transactions.findIndex(x => x.id === trans.id);
+                    this.transactions[ndx] = trans;
+                    return of(new HttpResponse({ status: 200, body: reqBody }));
+                } else {
+                    return throwError({ error: { message: 'Error' } });
+                }
+            }
+
+            // GET Categories
             if (request.url.endsWith('/categories') && request.method === 'GET') {
                 console.log(`>>>>>> MOCK <<<<<< ${request.url}`);
                 this.sleep(500);

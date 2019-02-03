@@ -36,14 +36,28 @@ export class AppService {
 
   /**************************************************************************
    * POST /transaction
-   * create  new transaction
+   * create new transaction
    **************************************************************************/
-  createTransaction(newTrans: Transaction): Observable<Transaction> {
+  createTransaction(trans: Transaction): Observable<Transaction> {
     console.log('AppService.createTransaction');
     const url = Util.urlJoin(rootUrl, '/transaction');
 
-    return this.http.post<Transaction>(url, newTrans.serialize(), httpOptions).pipe(
+    return this.http.post<Transaction>(url, trans.serialize(), httpOptions).pipe(
       tap(res => console.log('    created transaction', res)),
+      map(res => new Transaction(res))
+    );
+  }
+
+  /**************************************************************************
+   * PUT /transaction
+   * update transaction
+   **************************************************************************/
+  updateTransaction(trans: Transaction): Observable<Transaction> {
+    console.log('AppService.updateTransaction');
+    const url = Util.urlJoin(rootUrl, '/transaction');
+
+    return this.http.put<Transaction>(url, trans.serialize(), httpOptions).pipe(
+      tap(res => console.log('    updated transaction', res)),
       map(res => new Transaction(res))
     );
   }

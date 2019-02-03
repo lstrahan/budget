@@ -30,7 +30,7 @@ export class Transaction {
      * deserialize
      ****************************************************************************/
     deserialize(json: any) {
-        this.id = _.defaultTo(json.id, 'n/a');
+        this.id = _.defaultTo(json.id, '');
         this.title = _.defaultTo(json.title, 'n/a');
         this.categoryId = _.defaultTo(json.categoryId, 'n/a');
         this.category = _.defaultTo(json.category, 'n/a');

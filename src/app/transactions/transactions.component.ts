@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { AppService } from '../app.service';
 import { Transaction } from '../models/transaction';
-import { RowEvent, AgGridEvent, ColDef, GridApi } from 'ag-grid-community';
+import { RowEvent, AgGridEvent, ColDef, GridApi, ColumnApi } from 'ag-grid-community';
 import { Category } from '../models/category';
 
 @Component({
@@ -11,7 +11,9 @@ import { Category } from '../models/category';
 })
 export class TransactionsComponent implements OnInit, AfterViewInit {
 
-  private gridApi: GridApi;
+  gridApi: GridApi;
+  gridColumnApi: ColumnApi;
+
   private categories: Category[];
 
   columnDefs: ColDef[] = [
@@ -28,6 +30,8 @@ export class TransactionsComponent implements OnInit, AfterViewInit {
     resizable: true
   };
 
+  blankTransaction: Transaction = new Transaction({ id: '', title: '', category: '', amount: 0.00 });
+
   constructor(private appService: AppService) { }
 
   ngOnInit() { }
@@ -36,8 +40,12 @@ export class TransactionsComponent implements OnInit, AfterViewInit {
 
   onGridReady(params: AgGridEvent) {
     this.gridApi = params.api;
+    this.gridColumnApi = params.columnApi;
+
     this.gridApi.setColumnDefs(this.columnDefs);
+    this.gridApi.setSortModel([{ colId: 'date', sort: 'desc' }]);
     this.gridApi.sizeColumnsToFit();
+    this.gridApi.setPinnedTopRowData([ this.blankTransaction ]);
 
     this.appService.getTransactions().subscribe(res => {
       this.gridApi.setRowData(res);
@@ -55,16 +63,17 @@ export class TransactionsComponent implements OnInit, AfterViewInit {
 
   onRowValueChanged(params: RowEvent) {
     console.log('onRowValueChanged', params);
-  }
+    const trans = params.data as Transaction;
 
-  onBtnAddTransaction() {
-    const newTrans = new Transaction();
-    newTrans.title = 'new transaction';
-    newTrans.category = 'b';
-    newTrans.amount = 37.90;
-    this.appService.createTransaction(newTrans).subscribe(res => {
-      this.gridApi.updateRowData({ add: [res] });
-    });
+    if (!trans.id) {
+      this.appService.createTransaction(trans).subscribe(res => {
+        this.gridApi.updateRowData({ add: [res] });
+        this.blankTransaction.deserialize({ id: '', title: '', category: '', amount: 0.00 });
+        this.gridApi.setPinnedTopRowData([ this.blankTransaction ]);
+      });
+    } else {
+      this.appService.updateTransaction(trans).subscribe();
+    }
   }
 
 }
