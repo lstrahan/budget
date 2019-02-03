@@ -5,6 +5,7 @@ import { map, tap, catchError } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { Transaction } from './models/transaction';
 import { Util } from './util';
+import { Category } from './models/category';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -20,9 +21,9 @@ export class AppService {
   constructor(private http: HttpClient) { }
 
   /**************************************************************************
- * GET /transactions
- * get all transactions
- **************************************************************************/
+   * GET /transactions
+   * get all transactions
+   **************************************************************************/
   getTransactions(): Observable<Transaction[]> {
     console.log('AppService.getTransactions');
     const url = Util.urlJoin(rootUrl, '/transactions');
@@ -34,17 +35,31 @@ export class AppService {
   }
 
   /**************************************************************************
- * POST /transaction
- * create  new transaction
- **************************************************************************/
-createTransaction(newTrans: Transaction): Observable<Transaction> {
-  console.log('AppService.createTransaction');
-  const url = Util.urlJoin(rootUrl, '/transaction');
+   * POST /transaction
+   * create  new transaction
+   **************************************************************************/
+  createTransaction(newTrans: Transaction): Observable<Transaction> {
+    console.log('AppService.createTransaction');
+    const url = Util.urlJoin(rootUrl, '/transaction');
 
-  return this.http.post<Transaction>(url, newTrans.serialize(), httpOptions).pipe(
-    tap(res => console.log('    created transaction', res)),
-    map(res => new Transaction(res))
-  );
-}
+    return this.http.post<Transaction>(url, newTrans.serialize(), httpOptions).pipe(
+      tap(res => console.log('    created transaction', res)),
+      map(res => new Transaction(res))
+    );
+  }
+
+  /**************************************************************************
+   * GET /categories
+   * get all categories
+   **************************************************************************/
+  getCategories(): Observable<Category[]> {
+    console.log('AppService.getCategories');
+    const url = Util.urlJoin(rootUrl, '/categories');
+
+    return this.http.get<Category[]>(url, httpOptions).pipe(
+      tap(res => console.log('    got categories', res)),
+      map(res => res.map(item => new Category(item)))
+    );
+  }
 
 }

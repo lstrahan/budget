@@ -5,14 +5,18 @@ import { mergeMap } from 'rxjs/operators';
 import { MockData } from './mock-data';
 import { Transaction } from '../models/transaction';
 import { Util } from '../util';
+import { Category } from '../models/category';
 
 @Injectable()
 export class MockServiceInterceptor implements HttpInterceptor {
 
-    eventModel: any;
+    transactions: Transaction[];
+    categories: Category[];
 
     constructor() {
         console.warn(`!!! MOCK SERVICES ARE ENABLED !!! To disable comment out line in app.module.ts' 'providers' array`);
+        this.transactions = MockData.transactions.map(item => new Transaction(item));
+        this.categories = MockData.categories.map(item => new Category(item));
     }
 
     sleep(millisecs: number) {
@@ -67,7 +71,7 @@ export class MockServiceInterceptor implements HttpInterceptor {
             if (request.url.endsWith('/transactions') && request.method === 'GET') {
                 console.log(`>>>>>> MOCK <<<<<< ${request.url}`);
                 this.sleep(500);
-                const dataObj = MockData.transactions;
+                const dataObj = this.transactions;
                 if (dataObj) {
                     return of(new HttpResponse({ status: 200, body: dataObj }));
                 } else {
@@ -82,8 +86,20 @@ export class MockServiceInterceptor implements HttpInterceptor {
                 this.sleep(500);
                 if (reqBody) {
                     reqBody.id = Util.newGuid();
-                    MockData.transactions.push(reqBody);
+                    this.transactions.push(reqBody);
                     return of(new HttpResponse({ status: 200, body: reqBody }));
+                } else {
+                    return throwError({ error: { message: 'Error' } });
+                }
+            }
+
+            // GET Transactions
+            if (request.url.endsWith('/categories') && request.method === 'GET') {
+                console.log(`>>>>>> MOCK <<<<<< ${request.url}`);
+                this.sleep(500);
+                const dataObj = this.categories;
+                if (dataObj) {
+                    return of(new HttpResponse({ status: 200, body: dataObj }));
                 } else {
                     return throwError({ error: { message: 'Error' } });
                 }

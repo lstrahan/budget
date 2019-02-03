@@ -1,6 +1,9 @@
 <ag-grid-angular style="width: 500px; height: 500px;" class="ag-theme-material"
   editType="fullRow"
+  [stopEditingWhenGridLosesFocus]="true"
   [defaultColDef]="defaultColDef"
+  (rowEditingStopped)="onRowEditingStopped($event)"
+  (rowValueChanged)="onRowValueChanged($event)"
   (gridReady)="onGridReady($event)">
 </ag-grid-angular>
 
