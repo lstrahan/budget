@@ -1,9 +1,15 @@
-<ag-grid-angular style="width: 500px; height: 500px;" class="ag-theme-material"
-  (rowValueChanged)="onRowValueChanged($event)"
-  [defaultColDef]="defaultColDef"
-  (gridReady)="onGridReady($event)">
-</ag-grid-angular>
 
+
+<mat-card id="grid-container">
+  <mat-card-title>Transactions</mat-card-title>
+  <mat-card-content>
+    <ag-grid-angular class="ag-theme-balham"
+    (rowValueChanged)="onRowValueChanged($event)"
+    [defaultColDef]="defaultColDef"
+    (gridReady)="onGridReady($event)">
+  </ag-grid-angular>
+  </mat-card-content>
+</mat-card>
 <!-- 
   editType="fullRow"
   [stopEditingWhenGridLosesFocus]="true"

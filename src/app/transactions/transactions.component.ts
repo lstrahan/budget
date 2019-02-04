@@ -11,6 +11,7 @@ import { Transaction } from '../models/transaction';
 import { RowEvent, AgGridEvent, ColDef, GridApi, ColumnApi, ValueFormatterParams, ValueGetterParams } from 'ag-grid-community';
 import { Category } from '../models/category';
 import { Observable, forkJoin } from 'rxjs';
+import { headersToString } from 'selenium-webdriver/http';
 
 @Component({
   selector: 'app-transactions',
@@ -28,7 +29,7 @@ export class TransactionsComponent implements OnInit, AfterViewInit {
     {
       headerName: 'Description',
       field: 'description',
-      cellEditorFramework: AgGridMaterialTextEditorComponent
+      // cellEditorFramework: AgGridMaterialTextEditorComponent
     },
     {
       headerName: 'Date',
@@ -39,15 +40,16 @@ export class TransactionsComponent implements OnInit, AfterViewInit {
     {
       headerName: 'Category',
       field: 'categoryId',
-      cellEditorFramework: AgGridMaterialSelectEditorComponent,
-      // valueFormatter: (data) => this.categories ? this.categories.find(x => x.id === <string>data.value).name : null
-      // cellEditorParams: { values: ['aaa', 'bbb', 'ccc'] }
+      // cellEditorFramework: AgGridMaterialSelectEditorComponent,
+      cellEditor: 'agSelectCellEditor',
+      // valueGetter = (valParams) => this.categoryGetter(valParams)
+      valueFormatter: (valParams) => this.categoryFormatter(valParams)
     },
     {
       headerName: 'Amount',
       field: 'amount',
       type: 'numericColumn',
-      cellEditorFramework: AgGridMaterialTextEditorComponent,
+      // cellEditorFramework: AgGridMaterialTextEditorComponent,
       valueFormatter: (params) => this.currencyFormatter(params)
     }
   ];
@@ -56,7 +58,9 @@ export class TransactionsComponent implements OnInit, AfterViewInit {
     sortable: true,
     editable: true,
     filter: true,
-    resizable: true
+    resizable: true,
+    heaaderClass: '.header',
+    cellClass: 'cellStyle'
   };
 
   constructor(private appService: AppService) { }
@@ -79,9 +83,8 @@ export class TransactionsComponent implements OnInit, AfterViewInit {
     forkJoin(requests).subscribe(res => {
       this.categories = res[1];
       const colDef = this.gridColumnApi.getColumn('categoryId').getColDef();
-      colDef.cellEditorParams = { values: this.categories.map(x => ({key: x.id, value: x.name})) };
-      // colDef.valueGetter = (valParams) => this.categoryGetter(valParams);
-      colDef.valueFormatter = (valParams) => this.categoryFormatter(valParams);
+      // colDef.cellEditorParams = { values: this.categories.map(x => ({key: x.id, value: x.name})) };
+      colDef.cellEditorParams = { values: this.categories.map(x => x.name) };
 
       this.gridApi.setPinnedTopRowData([this.blankTransaction]);
 
@@ -90,16 +93,16 @@ export class TransactionsComponent implements OnInit, AfterViewInit {
 
   }
 
-  categoryGetter(params: ValueGetterParams) {
-    const cat = this.categories.find(x => x.id === params.data.categoryId);
-    if (!cat) {
-      console.log('category not found!');
-      return '';
-    } else {
-      console.log(`${params.data.categoryId} = ${cat.name}`);
-      return cat.name;
-    }
-  }
+  // categoryGetter(params: ValueGetterParams) {
+  //   const cat = this.categories.find(x => x.id === params.data.categoryId);
+  //   if (!cat) {
+  //     console.log('category not found!');
+  //     return '';
+  //   } else {
+  //     console.log(`${params.data.categoryId} = ${cat.name}`);
+  //     return cat.name;
+  //   }
+  // }
 
   categoryFormatter(params: ValueFormatterParams): string {
     const cat = this.categories.find(x => x.id === params.value);
